@@ -1,0 +1,15 @@
+# Ignore large data and results formats
+*.fastq
+*.fq
+*.bam
+*.sam
+*.bed
+*.vcf
+
+# R specific files
+.Rhistory
+.RData
+.Ruserdata
+
+# folders to ignore:
+# results/

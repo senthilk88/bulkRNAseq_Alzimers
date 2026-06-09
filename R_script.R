@@ -1,7 +1,8 @@
 #dir.create("/run/media/senthilkumar/New/GSE163877_bulkrna")
 setwd("/run/media/senthilkumar/New/GSE163877_bulkrna")
 #getwd()
-packages <- c("GEOquery", "DESeq2", "EnhancedVolcano", "data.table", "edgeR", "limma", "ggplot2", "ggrepel", "ggfortify", "stats", "sva", "magrittr", "dplyr", "tidyverse")
+packages <- c("GEOquery", "DESeq2", "EnhancedVolcano", "data.table", "edgeR", "limma", "ggplot2", "ggrepel", "ggfortify", "stats", "sva", "magrittr", "dplyr", 
+              "tidyverse", "data.table", "clusterProfiler", "org.Hs.eg.db", "ggplot2", "DOSE", "enrichplot")
 lapply(packages, library, character.only = TRUE)
 #gse <- getGEO("GSE163877", GSEMatrix = TRUE)
 #exp_mat <- getGEOSuppFiles("GSE163877", fetch_files = T)
@@ -65,6 +66,11 @@ EnhancedVolcano(dge_list,
                 widthConnectors = 0.5,
                 colConnectors = 'black')
 
+
+
+
+# enrichment --------------------------------------------------------------
+
 library(data.table)
 library(clusterProfiler)
 library(org.Hs.eg.db)
@@ -75,9 +81,6 @@ library(DOSE)
 library(enrichplot)
 p_thershold <- 0.05
 fc_threshold <- 1.0
-
-
-# enrichment --------------------------------------------------------------
 
 dge_ordered <- dge_list[order(dge_list$logFC, decreasing = T), ]
 head(dge_ordered)
@@ -91,3 +94,8 @@ fwrite(gene_enrichment_go_df, "gene_enrichment_go_df.tsv", sep = "\t")
 gsea_dotplot <- dotplot(gene_enrichment_go, showCategory = 20, orderBy="GeneRatio", label_format = 50)
 ?dotplot
 ggsave("dotplot_enrich_go_gsea.png", gsea_dotplot, device = "png", units = "cm", width = 26, height = 18)
+
+# KEGG-pathway ------------------------------------------------------------
+
+
+

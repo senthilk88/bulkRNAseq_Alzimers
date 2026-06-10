@@ -2,7 +2,8 @@
 setwd("/run/media/senthilkumar/New/GSE163877_bulkrna")
 #getwd()
 packages <- c("GEOquery", "DESeq2", "EnhancedVolcano", "data.table", "edgeR", "limma", "ggplot2", "ggrepel", "ggfortify", "stats", "sva", "magrittr", "dplyr", 
-              "tidyverse", "data.table", "clusterProfiler", "org.Hs.eg.db", "ggplot2", "DOSE", "enrichplot")
+              "tidyverse", "data.table", "clusterProfiler", "org.Hs.eg.db", "ggplot2", "DOSE", "enrichplot", "data.table", "clusterProfiler", "org.Hs.eg.db", 
+              "ggplot2", "DOSE", "enrichplot")
 lapply(packages, library, character.only = TRUE)
 #gse <- getGEO("GSE163877", GSEMatrix = TRUE)
 #exp_mat <- getGEOSuppFiles("GSE163877", fetch_files = T)
@@ -92,10 +93,15 @@ gene_enrichment_go <- gseGO(geneList = logFC, OrgDb = org.Hs.eg.db, pvalueCutoff
 gene_enrichment_go_df <- gene_enrichment_go@result
 fwrite(gene_enrichment_go_df, "gene_enrichment_go_df.tsv", sep = "\t")
 gsea_dotplot <- dotplot(gene_enrichment_go, showCategory = 20, orderBy="GeneRatio", label_format = 50)
+gsea_dotplot
 ?dotplot
 ggsave("dotplot_enrich_go_gsea.png", gsea_dotplot, device = "png", units = "cm", width = 26, height = 18)
 
 # KEGG-pathway ------------------------------------------------------------
 
+names(logFC)
 
-
+entrez_ids = mapIds(x = org.Hs.eg.db, keys = names(logFC), keytype = "ENSEMBL" , column = "ENTREZID", multiVals = "first")
+names(logFC) <- entrez_ids
+logFC <- logFC[!is.na(names(logFC))]
+logFC_gseKEGG <- gseKEGG(geneList = logFC, organism = "hsa")

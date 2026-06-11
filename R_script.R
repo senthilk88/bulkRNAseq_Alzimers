@@ -80,8 +80,7 @@ library(org.Hs.eg.db)
 library(ggplot2)
 library(DOSE)
 library(enrichplot)
-p_thershold <- 0.05
-fc_threshold <- 1.0
+
 
 dge_ordered <- dge_list[order(dge_list$logFC, decreasing = T), ]
 head(dge_ordered)
@@ -105,3 +104,10 @@ entrez_ids = mapIds(x = org.Hs.eg.db, keys = names(logFC), keytype = "ENSEMBL" ,
 names(logFC) <- entrez_ids
 logFC <- logFC[!is.na(names(logFC))]
 logFC_gseKEGG <- gseKEGG(geneList = logFC, organism = "hsa")
+
+
+# over representation analysis --------------------------------------------
+p_thershold <- 0.05
+fc_threshold <- 1.0
+
+upregulated_genes <- rownames(dge_list[(dge_list$logFC > fc_threshold) & (dge_list$P.Value < p_thershold), ])

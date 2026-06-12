@@ -94,7 +94,7 @@ fwrite(gene_enrichment_go_df, "gene_enrichment_go_df.tsv", sep = "\t")
 gsea_dotplot <- dotplot(gene_enrichment_go, showCategory = 20, orderBy="GeneRatio", label_format = 50)
 gsea_dotplot
 ?dotplot
-ggsave("dotplot_enrich_go_gsea.png", gsea_dotplot, device = "png", units = "cm", width = 26, height = 18)
+ggsave("dotplot_enrich_go_gsea.png", gsea_dotplot, device = "png", units = "cm", width = 26, height = 18, path = "plots")
 
 # KEGG-pathway ------------------------------------------------------------
 
@@ -111,3 +111,9 @@ p_thershold <- 0.05
 fc_threshold <- 1.0
 
 upregulated_genes <- rownames(dge_list[(dge_list$logFC > fc_threshold) & (dge_list$P.Value < p_thershold), ])
+upregulated_enrichedGO <- enrichGO(gene = upregulated_genes, OrgDb = org.Hs.eg.db, keyType="ENSEMBL", ont="ALL", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05)
+upregulated_enrichedGO_df <- upregulated_enrichedGO@result
+fwrite(upregulated_enrichedGO_df, file = "upregulated_enrichedGO_df.tsv", sep = "\t")
+
+dotplot_upregulated_enrichGO <- dotplot(object = upregulated_enrichedGO, showCategory = 10, orderBy="GeneRatio")
+ggsave("dotplot_upregulated_enrichGO.png", dotplot_upregulated_enrichGO, path = "plots")
